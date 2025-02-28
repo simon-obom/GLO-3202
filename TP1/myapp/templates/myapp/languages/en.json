@@ -1,0 +1,13 @@
+{
+    "home": "Home",
+    "login": "Login",
+    "create_account": "Create Account",
+    "welcome": "Welcome",
+    "login-header": "Login",
+    "username": "Username:",
+    "password": "Password:",
+    "submit": "Submit",
+    "create_account_message": "Welcome! Please create your account.",
+    "email": "Email:",
+    "sign_up": "Sign Up"
+}

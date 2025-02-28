@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Spudify</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+    <h1 data-i18n="login-header"></h1>
+    <form id="login-form">
+        <label data-i18n="username"></label>
+        <input type="text" id="username" required><br>
+        <label data-i18n="password"></label>
+        <input type="password" id="password" required><br>
+        <button data-i18n="submit" type="submit"></button>
+    </form>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            fetch("http://127.0.0.1:8000/api/login/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: document.getElementById("username").value,
+                    password: document.getElementById("password").value,
+                }),
+                credentials:"include"
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(JSON.stringify(data, null, 2));
+                    window.location.href = data.redirect; 
+    } else {
+        alert("Incapable de vous authentifier. Veuillez confirmer vos informations de connexion.");
+    } 
+            
+        })
+        .catch(error => console.error("Error:", error));})
+        
+        function getCSRFToken() {
+            return document.cookie.split("; ")
+                .find(row => row.startsWith("csrftoken="))
+                ?.split("=")[1];
+        }
+    </script>
+    
+</body>
+</html>

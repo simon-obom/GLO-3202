@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Spudify</title>
+    <style>
+        body {
+            visibility: hidden;
+        }
+    </style>
+<script>
+        function getCookie(name) {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            let [key, value] = cookie.trim().split('=');
+            if (key === name) return decodeURIComponent(value);
+        }
+        return null;
+    }
+    function checkAuth() {
+    const cookies = document.cookie.split(';');
+    let authenticated = false;
+    cookies.forEach(cookie => {
+        if (cookie.trim().startsWith('authenticated=true')) {
+            authenticated = true;
+        }
+    });
+    let username = getCookie("username");
+    if (authenticated) {
+        console.log(localStorage.getItem('language'));
+        document.getElementById("username-display").innerText = "Bienvenue, " + username + "!";
+        document.body.style.visibility = 'visible';
+    } else {
+        window.location.href = "/TP1/myapp/templates/myapp/connexion.html";  
+    }
+}
+
+    window.onload = checkAuth;
+
+</script>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+    <h1 id="username-display"></h1>
+    <p>INFORMATIONS CONFIDENTIELLES!!!</p>
+    <button id="logout-btn">Logout</button>
+    <script src="script.js"></script>
+
+    <script>
+        document.getElementById("logout-btn").addEventListener("click", function() {
+            fetch("http://127.0.0.1:8000/logout/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.cookie = "authenticated=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+                    window.location.href = data.redirect;
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+        </script>
+</body>
+</html>

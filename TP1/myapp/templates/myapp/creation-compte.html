@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Spudify</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+    <h1 data-i18n="create_account"></h1>
+    <p data-i18n="create_account_message">Welcome! Please create your account.</p>
+    <form id="signup-form">
+        <label for="username" data-i18n="username"></label>
+        <input type="text" id="username" required>
+    
+        <label for="email" data-i18n="email"></label>
+        <input type="email" id="email" required>
+    
+        <label for="password" data-i18n="password"></label>
+        <input type="password" id="password" required>
+    
+        <button type="submit" data-i18n="sign_up">S'inscrire</button>
+    </form>
+    <p id="message"></p>
+
+<script>
+document.getElementById("signup-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    let username = document.getElementById("username").value;
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    let response = await fetch("http://127.0.0.1:8000/api/register/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username,
+            email: email,
+            password: password
+        })
+    });
+
+    let data = await response.json();
+
+    if (response.ok) {
+        document.getElementById("message").innerText = "User registered successfully!";
+    } else {
+        document.getElementById("message").innerText = "Error: " + data.error;
+    }
+});
+</script>
+    <script src="script.js"></script>
+</body>
+</html>

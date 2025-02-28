@@ -1,0 +1,13 @@
+{
+    "home": "Accueil",
+    "login": "Connexion",
+    "create_account": "Créer un compte",
+    "welcome": "Bienvenue",
+    "login-header": "Connectez-vous",
+    "username": "Nom d'utilisateur:",
+    "password": "Mot de passe:",
+    "submit": "Soumettre",
+    "create_account_message": "Bienvenue! Veuillez vous créer un compte.",
+    "email": "Courriel:",
+    "sign_up": "S'inscrire"
+}
