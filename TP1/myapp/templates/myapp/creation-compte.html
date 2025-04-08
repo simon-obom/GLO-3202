@@ -26,33 +26,42 @@
     <p id="message"></p>
 
 <script>
-document.getElementById("signup-form").addEventListener("submit", async function(event) {
-    event.preventDefault();
-
-    let username = document.getElementById("username").value;
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
-
-    let response = await fetch("http://127.0.0.1:8000/api/register/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            username: username,
-            email: email,
-            password: password
-        })
-    });
-
-    let data = await response.json();
-
-    if (response.ok) {
-        document.getElementById("message").innerText = "User registered successfully!";
-    } else {
-        document.getElementById("message").innerText = "Error: " + data.error;
+    function getCSRFToken() {
+        return document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
     }
-});
+
+    document.getElementById("signup-form").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const csrfToken = getCSRFToken();
+        let username = document.getElementById("username").value;
+        let email = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
+
+        let response = await fetch("http://127.0.0.1:8000/api/register/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken()
+            },
+            body: JSON.stringify({
+                username: username,
+                email: email,
+                password: password
+            }),
+            credentials: "include"
+        });
+
+        let data = await response.json();
+
+        if (response.ok) {
+            document.getElementById("message").textContent = "User registered successfully!";
+        } else {
+            document.getElementById("message").textContent = "Error: " + data.error;
+        }
+    });
 </script>
     <script src="script.js"></script>
 </body>

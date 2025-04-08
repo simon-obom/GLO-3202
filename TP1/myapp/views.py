@@ -5,11 +5,11 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
 from django.contrib import messages
-from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.views.decorators.csrf import ensure_csrf_cookie,csrf_protect
 
 @api_view(["GET"])
 def get_users(request):
@@ -17,7 +17,8 @@ def get_users(request):
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
-
+@ensure_csrf_cookie
+@csrf_protect
 @api_view(["POST"])
 def register_user(request):
     """Registers a new user in the database."""
@@ -33,7 +34,9 @@ def register_user(request):
     user.save()
     return Response({"message": "User registered successfully"}, status=201)
 
-@csrf_exempt
+@ensure_csrf_cookie
+@csrf_protect
+@api_view(["POST"])
 def login_user(request):
     if request.method == "POST":
         try:
@@ -52,7 +55,9 @@ def login_user(request):
         except json.JSONDecodeError:
             return JsonResponse({"success": False, "message": "Invalid JSON"}, status=400)
 
-@csrf_exempt
+@ensure_csrf_cookie
+@csrf_protect
+@api_view(["POST"])
 def logout_user(request):
     response = HttpResponse("Logged out successfully")
     response.delete_cookie("authenticated")
@@ -62,6 +67,4 @@ def logout_user(request):
 
 @login_required(login_url="/TP1/myapp/templates/myapp/connexion.html")
 def loggedin_view(request):
-    if not request.user.is_authenticated:
-        return redirect('login') 
     return render(request, "/TP1/myapp/templates/myapp/loggedin.html")

@@ -40,17 +40,19 @@ INSTALLED_APPS = [
     'rest_framework',
     'myapp',
     "corsheaders",
+    'axes',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
 
 ROOT_URLCONF = 'TP1.urls'
@@ -129,7 +131,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "myapp/templates"],  # Add this line
+        'DIRS': [BASE_DIR / "myapp/templates"],  
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -150,7 +152,13 @@ REST_FRAMEWORK = {
 
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5500",  
+    'http://localhost:5500',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'axes.backends.AxesStandaloneBackend',  
+    'django.contrib.auth.backends.ModelBackend', 
+)
 
 LOGIN_URL = 'api/login'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
@@ -159,9 +167,13 @@ SESSION_COOKIE_AGE = 3600
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 CSRF_COOKIE_NAME = "csrftoken"
 SESSION_COOKIE_SECURE = False
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SECURE = False
-CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = "Lax"
 CORS_ALLOW_CREDENTIALS = True
+AXES_FAILURE_LIMIT = 3
+AXES_COOLOFF_TIME = 5
+AXES_LOCK_OUT_AT_FAILURE = True
+AXES_LOCK_OUT_DURATION = 60
